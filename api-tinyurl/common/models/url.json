@@ -1,0 +1,30 @@
+{
+  "name": "Url",
+  "plural": "urls",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "original": {
+      "type": "string"
+    },
+    "short": {
+      "type": "string"
+    },
+    "numericId": {
+      "type": "number"
+    },
+    "createdAt": {
+      "type": "date"
+    },
+    "updatedAt": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
