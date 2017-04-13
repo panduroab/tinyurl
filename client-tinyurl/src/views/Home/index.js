@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { TextField, RaisedButton, Snackbar } from 'material-ui';
+import { TextField, RaisedButton, Snackbar, Card, CardText } from 'material-ui';
+import { Link } from 'react-router';
 import UrlModel from '../../models/Url';
 const urlService = new UrlModel();
+const apiHost = process.env.REACT_APP_API_HOST || window.location.host;
 
 class Home extends Component {
     constructor() {
@@ -37,7 +39,9 @@ class Home extends Component {
             return false;
         }
         //Encode the original URL
-        urlService.encode(this.state.url)
+        urlService.encode({
+            "body": { ...this.state.url }
+        })
             .then((encodedUrl) => {
                 this.setState({
                     openError: false,
@@ -45,7 +49,10 @@ class Home extends Component {
                     url: encodedUrl
                 });
             }, (err) => {
-                console.log("err", err);
+                this.setState({
+                    openError: true,
+                    errorMessage: err.message
+                });
             });
     };
 
@@ -56,40 +63,54 @@ class Home extends Component {
     };
 
     render() {
-        /*let API_HOST = process.env.API_HOST;
         let encodedUrl = (this.state.url.short) ?
-            <div>
-                <a href={API_HOST + '/' + this.state.url.short} target="_blank">{API_HOST + '/' + this.state.url.short}</a>
-            </div>
-            : null;*/
-        let encodedUrl = null;
+            <Card>
+                <CardText style={{
+                    textAlign: "center"
+                }}>
+                    <p>TinyURL:</p>
+                    <a href={apiHost + '/' + this.state.url.short} target="_blank">
+                        {apiHost + '/' + this.state.url.short}
+                    </a>
+                </CardText>
+            </Card>
+            : null;
         return (
-            <div>
-                <div>
-                    <Snackbar
-                        open={this.state.openError}
-                        message={this.state.errorMessage}
-                        autoHideDuration={4000}
-                        onRequestClose={this.handleCloseError}
-                        bodyStyle={{ backgroundColor: "#D32F2F" }}
-                    />
-                    <TextField
-                        id="original"
-                        floatingLabelText="Long URL"
-                        hintText="http://my-really-long-url.com"
-                        floatingLabelFixed={true}
-                        fullWidth={true}
-                        onChange={this.handleChange("original")}
-                    />
-                    <RaisedButton
-                        label="Make it Tiny"
-                        labelPosition="before"
-                        containerElement="label"
-                        onClick={this.handleTinyRequest}
-                    >
-                    </RaisedButton>
+            <div style={{
+                marginTop: '10px'
+            }}>
+                <div style={{
+                    textAlign: "right"
+                }}>
+                    <Link to="/catalog">Go to Catalog</Link>
                 </div>
-                {encodedUrl}
+                <Snackbar
+                    open={this.state.openError}
+                    message={this.state.errorMessage}
+                    autoHideDuration={4000}
+                    onRequestClose={this.handleCloseError}
+                    bodyStyle={{ backgroundColor: "#D32F2F" }}
+                />
+                <TextField
+                    id="original"
+                    floatingLabelText="Long URL"
+                    hintText="http://my-really-long-url.com"
+                    floatingLabelFixed={true}
+                    fullWidth={true}
+                    onChange={this.handleChange("original")}
+                />
+                <RaisedButton
+                    label="Make it Tiny"
+                    labelPosition="before"
+                    containerElement="label"
+                    onClick={this.handleTinyRequest}
+                >
+                </RaisedButton>
+                <div style={{
+                    marginTop: "20px"
+                }}>
+                    {encodedUrl}
+                </div>
             </div>
         );
     }
