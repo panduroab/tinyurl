@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("");
 
 module.exports = function (Url) {
@@ -30,6 +31,51 @@ module.exports = function (Url) {
         return numericId;
     };
 
+    Url.encodeService = function (filter, next) {
+        async.waterfall([
+            function getUrl(next) {
+                if (filter.unique) {
+                    Url.create(filter, function (err, url) {
+                        if (err) {
+                            return next(err);
+                        }
+                        next(null, url, true);
+                    });
+                } else {
+                    Url.findOrCreate({ "where": filter }, filter, function (err, url, created) {
+                        if (err) {
+                            return next(err);
+                        }
+                        next(null, url, created);
+                    });
+                }
+            },
+            function encodeUrl(url, created, next) {
+                if (!url) {
+                    return next(new Error("Unexpected error."));
+                }
+
+                if (!created) {
+                    return next(null, url);
+                }
+
+                Url.count(function (err, count) {
+                    if (err) {
+                        return next(err);
+                    }
+                    url.numericId = count;
+                    url.short = Url.encodeId(count);
+                    url.save(function (err, result) {
+                        if (err) {
+                            return next(err);
+                        }
+                        return next(null, result);
+                    });
+                });
+            }
+        ], next);
+    };
+
     Url.encode = function (body, next) {
         if (!body.original) {
             return next(new Error("The attribute 'original' is required."));
@@ -40,38 +86,11 @@ module.exports = function (Url) {
         }
 
         var filter = {
-            "original": body.original
+            "original": body.original,
+            "unique": body.unique || false
         };
 
-        Url.findOrCreate({
-            "where": filter
-        }, filter, function (err, url, created) {
-            if (err) {
-                return next(err);
-            }
-
-            if (!url) {
-                return next(new Error("Unexpected error."));
-            }
-
-            if (!created) {
-                return next(null, url);
-            }
-
-            Url.count(function (err, count) {
-                if (err) {
-                    return next(err);
-                }
-                url.numericId = count;
-                url.short = Url.encodeId(count);
-                url.save(function (err, result) {
-                    if (err) {
-                        return next(err);
-                    }
-                    return next(null, result);
-                });
-            });
-        });
+        Url.encodeService(filter, next);
     };
 
     Url.remoteMethod('encode', {

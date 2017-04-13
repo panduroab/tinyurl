@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextField, RaisedButton, Snackbar, Card, CardText } from 'material-ui';
+import { TextField, RaisedButton, Snackbar, Card, CardText, Checkbox } from 'material-ui';
 import { Link } from 'react-router';
 import UrlModel from '../../models/Url';
 const urlService = new UrlModel();
@@ -20,11 +20,13 @@ class Home extends Component {
     };
 
     handleChange(key) {
-        return function (e) {
-            let url = {};
-            url[key] = e.target.value;
-            this.setState({
-                url
+        return function (e, val) {
+            this.setState((prevState) => {
+                let url = prevState.url;
+                url[key] = val;
+                return {
+                    url
+                }
             });
         }.bind(this);
     };
@@ -99,13 +101,23 @@ class Home extends Component {
                     fullWidth={true}
                     onChange={this.handleChange("original")}
                 />
-                <RaisedButton
-                    label="Make it Tiny"
-                    labelPosition="before"
-                    containerElement="label"
-                    onClick={this.handleTinyRequest}
-                >
-                </RaisedButton>
+                <Checkbox
+                    id="unique"
+                    label="Give me a unique short URL"
+                    onCheck={this.handleChange("unique")} />
+                <div style={{
+                    textAlign: "right"
+                }}>
+                    <RaisedButton
+                        style={{
+                            textAlign: "right"
+                        }}
+                        label="Make it Tiny"
+                        labelPosition="before"
+                        containerElement="label"
+                        onClick={this.handleTinyRequest}
+                    />
+                </div>
                 <div style={{
                     marginTop: "20px"
                 }}>

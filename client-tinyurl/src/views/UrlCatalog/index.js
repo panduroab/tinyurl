@@ -27,7 +27,8 @@ class UrlCatalog extends Component {
             "filter": {
                 "order": "numericId DESC",
                 "limit": this.state.limit,
-                "skip": this.state.skip
+                "skip": this.state.skip,
+                "include": "clicks"
             }
         })
             .then((urls) => {
@@ -87,6 +88,7 @@ class UrlCatalog extends Component {
                         adjustForCheckbox={false}>
                         <TableRow>
                             <TableHeaderColumn>Short</TableHeaderColumn>
+                            <TableHeaderColumn>Clicks</TableHeaderColumn>
                             <TableHeaderColumn>Original</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
@@ -99,6 +101,9 @@ class UrlCatalog extends Component {
                                         <a href={apiHost + '/' + url.short} target="_blank">
                                             {apiHost + '/' + url.short}
                                         </a>
+                                    </TableRowColumn>
+                                    <TableRowColumn>
+                                        {url.clicks.length}
                                     </TableRowColumn>
                                     <TableRowColumn>
                                         <a href={url.original} target="_blank">

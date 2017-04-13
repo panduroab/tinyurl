@@ -7,6 +7,7 @@ module.exports = function (server) {
 
   router.get('/:hash', function (req, res) {
     var urlService = server.models.Url;
+    var clickService = server.models.Click;
     var filter = {
       "where": {
         "numericId": urlService.decodeHash(req.params.hash)
@@ -23,7 +24,11 @@ module.exports = function (server) {
         return res.status(404).send("Page not found.");
       }
 
-      console.log("Redirect to: ", url.original);
+      clickService.create({
+        "createdAt": new Date(),
+        "urlId": url.id
+      });
+
       res.redirect(url.original);
     });
   });
