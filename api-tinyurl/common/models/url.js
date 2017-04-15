@@ -61,7 +61,7 @@ module.exports = function (Url) {
     Url.encodeService = function (filter, next) {
         async.waterfall([
             function getUrl(next) {
-                if (filter.unique) {
+                if (filter.unique || filter.short) {
                     Url.create(filter, function (err, url) {
                         if (err) {
                             return next(err);
@@ -82,7 +82,7 @@ module.exports = function (Url) {
                     return next(new Error("Unexpected error."));
                 }
 
-                if (!created) {
+                if (!created || filter.customShort) {
                     return next(null, url);
                 }
 
@@ -114,8 +114,13 @@ module.exports = function (Url) {
 
         var filter = {
             "original": body.original,
-            "unique": body.unique || false
+            "unique": body.unique || false,
+            "customShort": body.customShort || null
         };
+
+        if (body.customShort) {
+            filter['short'] = body.customShort;
+        }
 
         Url.encodeService(filter, next);
     };

@@ -10,7 +10,7 @@ module.exports = function (server) {
     var clickService = server.models.Click;
     var filter = {
       "where": {
-        "numericId": urlService.decodeHash(req.params.hash)
+        "short": req.params.hash
       }
     };
     urlService.findOne(filter, function (err, url) {

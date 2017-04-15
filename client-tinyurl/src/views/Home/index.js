@@ -10,6 +10,7 @@ class Home extends Component {
         super();
         this.state = {
             openError: false,
+            customUrl: false,
             errorMessage: '',
             url: {}
         };
@@ -58,6 +59,12 @@ class Home extends Component {
         }.bind(this);
     };
 
+    handleCustomUrl = (e, val) => {
+        this.setState({
+            customUrl: val
+        });
+    };
+
     handleTinyRequest = () => {
         //Validate the URL
         if (!this.state.url.original || !this.isValidURL(this.state.url.original)) {
@@ -104,6 +111,16 @@ class Home extends Component {
                 </CardText>
             </Card>
             : null;
+        let customUrl = (this.state.customUrl) ?
+            <TextField
+                id="customShort"
+                floatingLabelText="Custom hash"
+                hintText="wzln"
+                floatingLabelFixed={true}
+                fullWidth={true}
+                onChange={this.handleChange("customShort")}
+            />
+            : null;
         return (
             <div style={{
                 marginTop: '10px'
@@ -128,10 +145,17 @@ class Home extends Component {
                     fullWidth={true}
                     onChange={this.handleChange("original")}
                 />
+                {
+                    customUrl
+                }
                 <Checkbox
                     id="unique"
                     label="Give me a unique short URL"
                     onCheck={this.handleChange("unique")} />
+                <Checkbox
+                    id="custom"
+                    label="Create your custom URL"
+                    onCheck={this.handleCustomUrl} />
                 <div style={{
                     textAlign: "right"
                 }}>
