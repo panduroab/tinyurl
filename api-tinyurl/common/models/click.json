@@ -1,0 +1,24 @@
+{
+  "name": "Click",
+  "plural": "clicks",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "createdAt": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "url": {
+      "type": "belongsTo",
+      "model": "Url",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

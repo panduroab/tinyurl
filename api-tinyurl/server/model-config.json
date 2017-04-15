@@ -36,5 +36,9 @@
   "Url": {
     "dataSource": "db",
     "public": true
+  },
+  "Click": {
+    "dataSource": "db",
+    "public": true
   }
 }

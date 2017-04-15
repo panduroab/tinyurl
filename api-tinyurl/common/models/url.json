@@ -24,7 +24,13 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "clicks": {
+      "type": "hasMany",
+      "model": "Click",
+      "foreignKey": ""
+    }
+  },
   "acls": [],
   "methods": {}
 }
